@@ -1,15 +1,28 @@
-const express = require('express');
-const { resolve } = require('path');
+require("dotenv").config();
+const express = require("express");
+const mongoose = require("mongoose");
 
 const app = express();
-const port = 3010;
+app.use(express.json());
 
-app.use(express.static('static'));
+const MONGO_URI = process.env.MONGO_URI || "mongodb://localhost:27017/inventoryDB";
+const PORT = process.env.PORT || 3010;
 
-app.get('/', (req, res) => {
-  res.sendFile(resolve(__dirname, 'pages/index.html'));
+mongoose.connect(MONGO_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+})
+.then(() => {
+  console.log("✅ Connected to MongoDB");
+})
+.catch(err => {
+  console.error("❌ Error connecting to MongoDB:", err.message);
 });
 
-app.listen(port, () => {
-  console.log(`Example app listening at http://localhost:${port}`);
+app.get("/", (req, res) => {
+  res.send("🚀 Product Inventory Tracker Backend is running!");
+});
+
+app.listen(PORT, () => {
+  console.log(`🌍 Server listening on http://localhost:${PORT}`);
 });
